@@ -1,0 +1,2 @@
+/usr/bin/ar qc libassist_session.a CMakeFiles/assist_session.dir/src/session.c.o
+/usr/bin/ranlib libassist_session.a

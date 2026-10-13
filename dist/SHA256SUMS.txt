@@ -1,0 +1,2 @@
+d3bbc6eaeb2fdc3236ce06c42e240d105d5cc7a39a762cc1073bc09366c33a5d  assist_client.exe
+50feff0452e79c7b01cae5b43517357c1154f89f8ba2876d793b70dbb349fe94  assist_server.exe

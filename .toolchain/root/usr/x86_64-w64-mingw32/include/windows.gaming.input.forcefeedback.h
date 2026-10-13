@@ -1,0 +1,1 @@
+../../share/mingw-w64/include/windows.gaming.input.forcefeedback.h
