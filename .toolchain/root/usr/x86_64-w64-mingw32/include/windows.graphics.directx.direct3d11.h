@@ -1,1 +1,0 @@
-../../share/mingw-w64/include/windows.graphics.directx.direct3d11.h

@@ -1,0 +1,323 @@
+ .gitignore                                         |      1 [32m+[m
+ ...inutils-mingw-w64-x86-64_2.44-3+12+b1_amd64.deb |    Bin [31m3473344[m -> [32m0[m bytes
+ .../gcc-mingw-w64-base_14.2.0-19+27+b1_amd64.deb   |    Bin [31m194268[m -> [32m0[m bytes
+ ...-x86-64-posix-runtime_14.2.0-19+27+b1_amd64.deb |    Bin [31m13037152[m -> [32m0[m bytes
+ ...ingw-w64-x86-64-posix_14.2.0-19+27+b1_amd64.deb |    Bin [31m37567656[m -> [32m0[m bytes
+ .toolchain/debs/mingw-w64-common_12.0.0-5_all.deb  |    Bin [31m5792084[m -> [32m0[m bytes
+ .../debs/mingw-w64-x86-64-dev_12.0.0-5_all.deb     |    Bin [31m4871860[m -> [32m0[m bytes
+ .../root/usr/bin/x86_64-w64-mingw32-addr2line      |    Bin [31m1390064[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-ar      |    Bin [31m1422616[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-as      |    Bin [31m2119808[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-c++filt |    Bin [31m1385456[m -> [32m0[m bytes
+ .../root/usr/bin/x86_64-w64-mingw32-cpp-posix      |    Bin [31m1988576[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-dlltool |    Bin [31m1455576[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-dllwrap |    Bin [31m51560[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-elfedit |    Bin [31m43816[m -> [32m0[m bytes
+ .../root/usr/bin/x86_64-w64-mingw32-gcc-14-posix   |    Bin [31m1988576[m -> [32m0[m bytes
+ .../root/usr/bin/x86_64-w64-mingw32-gcc-ar-posix   |    Bin [31m38928[m -> [32m0[m bytes
+ .../root/usr/bin/x86_64-w64-mingw32-gcc-nm-posix   |    Bin [31m38928[m -> [32m0[m bytes
+ .../root/usr/bin/x86_64-w64-mingw32-gcc-posix      |    Bin [31m1988576[m -> [32m0[m bytes
+ .../usr/bin/x86_64-w64-mingw32-gcc-ranlib-posix    |    Bin [31m38928[m -> [32m0[m bytes
+ .../usr/bin/x86_64-w64-mingw32-gcov-dump-posix     |    Bin [31m1121504[m -> [32m0[m bytes
+ .../root/usr/bin/x86_64-w64-mingw32-gcov-posix     |    Bin [31m1215712[m -> [32m0[m bytes
+ .../usr/bin/x86_64-w64-mingw32-gcov-tool-posix     |    Bin [31m1146080[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-gprof   |    Bin [31m1464880[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-ld      |    Bin [31m2089728[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-ld.bfd  |      1 [31m-[m
+ .../root/usr/bin/x86_64-w64-mingw32-lto-dump-posix |    Bin [31m37703016[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-nm      |    Bin [31m1411280[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-objcopy |    Bin [31m1541464[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-objdump |    Bin [31m2970160[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-ranlib  |    Bin [31m1422648[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-readelf |    Bin [31m1055704[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-size    |    Bin [31m1389808[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-strings |    Bin [31m1394064[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-strip   |    Bin [31m1541464[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-windmc  |    Bin [31m1426936[m -> [32m0[m bytes
+ .toolchain/root/usr/bin/x86_64-w64-mingw32-windres |    Bin [31m1529312[m -> [32m0[m bytes
+ .../14-posix/adalib/libgnarl-14.dll                |    Bin [31m1161078[m -> [32m0[m bytes
+ .../14-posix/adalib/libgnat-14.dll                 |    Bin [31m15197664[m -> [32m0[m bytes
+ .../usr/lib/gcc/x86_64-w64-mingw32/14-posix/cc1    |    Bin [31m39088776[m -> [32m0[m bytes
+ .../lib/gcc/x86_64-w64-mingw32/14-posix/collect2   |    Bin [31m1182944[m -> [32m0[m bytes
+ .../lib/gcc/x86_64-w64-mingw32/14-posix/crtbegin.o |    Bin [31m820[m -> [32m0[m bytes
+ .../lib/gcc/x86_64-w64-mingw32/14-posix/crtend.o   |    Bin [31m1021[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/crtfastmath.o  |    Bin [31m2837[m -> [32m0[m bytes
+ .../14-posix/include-fixed/README                  |     14 [31m-[m
+ .../14-posix/include/ISO_Fortran_binding.h         |    321 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/acc_prof.h |    252 [31m-[m
+ .../14-posix/include/adxintrin.h                   |     81 [31m-[m
+ .../14-posix/include/ammintrin.h                   |     93 [31m-[m
+ .../14-posix/include/amxbf16intrin.h               |     52 [31m-[m
+ .../14-posix/include/amxcomplexintrin.h            |     59 [31m-[m
+ .../14-posix/include/amxfp16intrin.h               |     46 [31m-[m
+ .../14-posix/include/amxint8intrin.h               |     61 [31m-[m
+ .../14-posix/include/amxtileintrin.h               |     98 [31m-[m
+ .../14-posix/include/avx2intrin.h                  |   2270 [31m-[m
+ .../14-posix/include/avx5124fmapsintrin.h          |    216 [31m-[m
+ .../14-posix/include/avx5124vnniwintrin.h          |    132 [31m-[m
+ .../14-posix/include/avx512bf16intrin.h            |    163 [31m-[m
+ .../14-posix/include/avx512bf16vlintrin.h          |    276 [31m-[m
+ .../14-posix/include/avx512bitalgintrin.h          |    111 [31m-[m
+ .../14-posix/include/avx512bitalgvlintrin.h        |    180 [31m-[m
+ .../14-posix/include/avx512bwintrin.h              |   3377 [31m-[m
+ .../14-posix/include/avx512cdintrin.h              |    184 [31m-[m
+ .../14-posix/include/avx512dqintrin.h              |   2905 [31m-[m
+ .../14-posix/include/avx512erintrin.h              |    536 [31m-[m
+ .../14-posix/include/avx512fintrin.h               |  16617 [31m--[m
+ .../14-posix/include/avx512fp16intrin.h            |   7246 [31m-[m
+ .../14-posix/include/avx512fp16vlintrin.h          |   3388 [31m-[m
+ .../14-posix/include/avx512ifmaintrin.h            |    104 [31m-[m
+ .../14-posix/include/avx512ifmavlintrin.h          |    145 [31m-[m
+ .../14-posix/include/avx512pfintrin.h              |    269 [31m-[m
+ .../14-posix/include/avx512vbmi2intrin.h           |    545 [31m-[m
+ .../14-posix/include/avx512vbmi2vlintrin.h         |   1022 [31m-[m
+ .../14-posix/include/avx512vbmiintrin.h            |    158 [31m-[m
+ .../14-posix/include/avx512vbmivlintrin.h          |    273 [31m-[m
+ .../14-posix/include/avx512vlbwintrin.h            |   5248 [31m-[m
+ .../14-posix/include/avx512vldqintrin.h            |   2016 [31m-[m
+ .../14-posix/include/avx512vlintrin.h              |  13929 [31m--[m
+ .../14-posix/include/avx512vnniintrin.h            |    144 [31m-[m
+ .../14-posix/include/avx512vnnivlintrin.h          |    210 [31m-[m
+ .../14-posix/include/avx512vp2intersectintrin.h    |     58 [31m-[m
+ .../14-posix/include/avx512vp2intersectvlintrin.h  |     73 [31m-[m
+ .../14-posix/include/avx512vpopcntdqintrin.h       |     94 [31m-[m
+ .../14-posix/include/avx512vpopcntdqvlintrin.h     |    147 [31m-[m
+ .../14-posix/include/avxifmaintrin.h               |     78 [31m-[m
+ .../14-posix/include/avxintrin.h                   |   1607 [31m-[m
+ .../14-posix/include/avxneconvertintrin.h          |    140 [31m-[m
+ .../14-posix/include/avxvnniint16intrin.h          |    138 [31m-[m
+ .../14-posix/include/avxvnniint8intrin.h           |    138 [31m-[m
+ .../14-posix/include/avxvnniintrin.h               |    113 [31m-[m
+ .../14-posix/include/bmi2intrin.h                  |    109 [31m-[m
+ .../14-posix/include/bmiintrin.h                   |    202 [31m-[m
+ .../14-posix/include/bmmintrin.h                   |     29 [31m-[m
+ .../gcc/x86_64-w64-mingw32/14-posix/include/cet.h  |     93 [31m-[m
+ .../14-posix/include/cetintrin.h                   |    129 [31m-[m
+ .../14-posix/include/cldemoteintrin.h              |     47 [31m-[m
+ .../14-posix/include/clflushoptintrin.h            |     49 [31m-[m
+ .../14-posix/include/clwbintrin.h                  |     49 [31m-[m
+ .../14-posix/include/clzerointrin.h                |     44 [31m-[m
+ .../14-posix/include/cmpccxaddintrin.h             |     89 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/cpuid.h    |    362 [31m-[m
+ .../14-posix/include/cross-stdarg.h                |     72 [31m-[m
+ .../14-posix/include/emmintrin.h                   |   1608 [31m-[m
+ .../14-posix/include/enqcmdintrin.h                |     55 [31m-[m
+ .../14-posix/include/f16cintrin.h                  |     98 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/float.h    |    632 [31m-[m
+ .../14-posix/include/fma4intrin.h                  |    241 [31m-[m
+ .../14-posix/include/fmaintrin.h                   |    302 [31m-[m
+ .../14-posix/include/fxsrintrin.h                  |     73 [31m-[m
+ .../gcc/x86_64-w64-mingw32/14-posix/include/gcov.h |     70 [31m-[m
+ .../14-posix/include/gfniintrin.h                  |    430 [31m-[m
+ .../14-posix/include/hresetintrin.h                |     48 [31m-[m
+ .../14-posix/include/ia32intrin.h                  |    317 [31m-[m
+ .../14-posix/include/immintrin.h                   |    149 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/iso646.h   |     45 [31m-[m
+ .../14-posix/include/keylockerintrin.h             |    129 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/limits.h   |    213 [31m-[m
+ .../14-posix/include/lwpintrin.h                   |    107 [31m-[m
+ .../14-posix/include/lzcntintrin.h                 |     75 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/mm3dnow.h  |    233 [31m-[m
+ .../14-posix/include/mm_malloc.h                   |     78 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/mmintrin.h |    965 [31m-[m
+ .../14-posix/include/movdirintrin.h                |     74 [31m-[m
+ .../14-posix/include/mwaitintrin.h                 |     52 [31m-[m
+ .../14-posix/include/mwaitxintrin.h                |     50 [31m-[m
+ .../14-posix/include/nmmintrin.h                   |     33 [31m-[m
+ .../gcc/x86_64-w64-mingw32/14-posix/include/omp.h  |    368 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/openacc.h  |    167 [31m-[m
+ .../14-posix/include/pconfigintrin.h               |     78 [31m-[m
+ .../14-posix/include/pkuintrin.h                   |     56 [31m-[m
+ .../14-posix/include/pmmintrin.h                   |    121 [31m-[m
+ .../14-posix/include/popcntintrin.h                |     53 [31m-[m
+ .../14-posix/include/prfchiintrin.h                |     70 [31m-[m
+ .../14-posix/include/prfchwintrin.h                |     37 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/quadmath.h |    207 [31m-[m
+ .../14-posix/include/quadmath_weak.h               |    141 [31m-[m
+ .../14-posix/include/raointintrin.h                |    100 [31m-[m
+ .../14-posix/include/rdseedintrin.h                |     66 [31m-[m
+ .../14-posix/include/rtmintrin.h                   |     84 [31m-[m
+ .../14-posix/include/serializeintrin.h             |     49 [31m-[m
+ .../14-posix/include/sgxintrin.h                   |    253 [31m-[m
+ .../14-posix/include/sha512intrin.h                |     64 [31m-[m
+ .../14-posix/include/shaintrin.h                   |     98 [31m-[m
+ .../14-posix/include/sm3intrin.h                   |     72 [31m-[m
+ .../14-posix/include/sm4intrin.h                   |     70 [31m-[m
+ .../14-posix/include/smmintrin.h                   |    852 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/ssp/ssp.h  |     65 [31m-[m
+ .../14-posix/include/ssp/stdio.h                   |    100 [31m-[m
+ .../14-posix/include/ssp/string.h                  |    167 [31m-[m
+ .../14-posix/include/ssp/unistd.h                  |     84 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/stdalign.h |     40 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/stdarg.h   |    136 [31m-[m
+ .../14-posix/include/stdatomic.h                   |    255 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/stdbool.h  |     51 [31m-[m
+ .../14-posix/include/stdckdint.h                   |     40 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/stddef.h   |    464 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/stdfix.h   |    204 [31m-[m
+ .../14-posix/include/stdint-gcc.h                  |    369 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/stdint.h   |     14 [31m-[m
+ .../14-posix/include/stdnoreturn.h                 |     35 [31m-[m
+ .../14-posix/include/syslimits.h                   |      8 [31m-[m
+ .../14-posix/include/tbmintrin.h                   |    180 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/tgmath.h   |    127 [31m-[m
+ .../14-posix/include/tmmintrin.h                   |    249 [31m-[m
+ .../14-posix/include/tsxldtrkintrin.h              |     56 [31m-[m
+ .../14-posix/include/uintrintrin.h                 |     84 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/unwind.h   |    298 [31m-[m
+ .../14-posix/include/usermsrintrin.h               |     60 [31m-[m
+ .../14-posix/include/vaesintrin.h                  |    111 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/include/varargs.h  |      7 [31m-[m
+ .../14-posix/include/vpclmulqdqintrin.h            |     81 [31m-[m
+ .../14-posix/include/waitpkgintrin.h               |     63 [31m-[m
+ .../14-posix/include/wbnoinvdintrin.h              |     49 [31m-[m
+ .../14-posix/include/wmmintrin.h                   |    119 [31m-[m
+ .../14-posix/include/x86gprintrin.h                |    277 [31m-[m
+ .../14-posix/include/x86intrin.h                   |     42 [31m-[m
+ .../14-posix/include/xmmintrin.h                   |   1340 [31m-[m
+ .../14-posix/include/xopintrin.h                   |    850 [31m-[m
+ .../14-posix/include/xsavecintrin.h                |     58 [31m-[m
+ .../14-posix/include/xsaveintrin.h                 |     86 [31m-[m
+ .../14-posix/include/xsaveoptintrin.h              |     58 [31m-[m
+ .../14-posix/include/xsavesintrin.h                |     72 [31m-[m
+ .../14-posix/include/xtestintrin.h                 |     51 [31m-[m
+ .../14-posix/install-tools/fixinc.sh               |      2 [31m-[m
+ .../14-posix/install-tools/fixinc_list             |      1 [31m-[m
+ .../14-posix/install-tools/fixincl                 |    Bin [31m175680[m -> [32m0[m bytes
+ .../14-posix/install-tools/gsyslimits.h            |      8 [31m-[m
+ .../14-posix/install-tools/include/README          |     14 [31m-[m
+ .../14-posix/install-tools/include/limits.h        |    213 [31m-[m
+ .../14-posix/install-tools/macro_list              |      7 [31m-[m
+ .../14-posix/install-tools/mkheaders               |    123 [31m-[m
+ .../14-posix/install-tools/mkheaders.conf          |      3 [31m-[m
+ .../14-posix/install-tools/mkinstalldirs           |    162 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/libatomic-1.dll    |    Bin [31m248409[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libatomic.a    |    Bin [31m60810[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/libatomic.dll.a    |    Bin [31m61076[m -> [32m0[m bytes
+ .../lib/gcc/x86_64-w64-mingw32/14-posix/libgcc.a   |    Bin [31m2970392[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libgcc_eh.a    |    Bin [31m10086[m -> [32m0[m bytes
+ .../lib/gcc/x86_64-w64-mingw32/14-posix/libgcc_s.a |    Bin [31m78978[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/libgcc_s_seh-1.dll |    Bin [31m954773[m -> [32m0[m bytes
+ .../lib/gcc/x86_64-w64-mingw32/14-posix/libgcov.a  |    Bin [31m41174[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/libgfortran-5.dll  |    Bin [31m11990436[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libgomp-1.dll  |    Bin [31m1755980[m -> [32m0[m bytes
+ .../lib/gcc/x86_64-w64-mingw32/14-posix/libgomp.a  |    Bin [31m407564[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libgomp.dll.a  |    Bin [31m291008[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libgomp.spec   |      3 [31m-[m
+ .../x86_64-w64-mingw32/14-posix/liblto_plugin.so   |    Bin [31m87880[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libobjc-4.dll  |    Bin [31m568741[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/libquadmath-0.dll  |    Bin [31m1177263[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libquadmath.a  |    Bin [31m502074[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/libquadmath.dll.a  |    Bin [31m52362[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libssp-0.dll   |    Bin [31m129858[m -> [32m0[m bytes
+ .../lib/gcc/x86_64-w64-mingw32/14-posix/libssp.a   |    Bin [31m11548[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/libssp.dll.a   |    Bin [31m8344[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/libssp_nonshared.a |    Bin [31m800[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/libstdc++-6.dll    |    Bin [31m26390974[m -> [32m0[m bytes
+ .../gcc/x86_64-w64-mingw32/14-posix/lto-wrapper    |    Bin [31m1862976[m -> [32m0[m bytes
+ .../usr/lib/gcc/x86_64-w64-mingw32/14-posix/lto1   |    Bin [31m37698920[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/plugin/gengtype    |    Bin [31m208128[m -> [32m0[m bytes
+ .../x86_64-w64-mingw32/14-posix/plugin/gtype.state |  41993 [31m----[m
+ .../plugin/include/ada/gcc-interface/ada-tree.def  |     83 [31m-[m
+ .../14-posix/plugin/include/addresses.h            |    111 [31m-[m
+ .../14-posix/plugin/include/alias.h                |     51 [31m-[m
+ .../14-posix/plugin/include/align.h                |     83 [31m-[m
+ .../14-posix/plugin/include/all-tree.def           |      9 [31m-[m
+ .../14-posix/plugin/include/alloc-pool.h           |    576 [31m-[m
+ .../plugin/include/analyzer/access-diagram.h       |    167 [31m-[m
+ .../plugin/include/analyzer/analysis-plan.h        |     60 [31m-[m
+ .../plugin/include/analyzer/analyzer-language.h    |     57 [31m-[m
+ .../plugin/include/analyzer/analyzer-logging.h     |    268 [31m-[m
+ .../plugin/include/analyzer/analyzer-selftests.h   |     53 [31m-[m
+ .../14-posix/plugin/include/analyzer/analyzer.h    |    580 [31m-[m
+ .../14-posix/plugin/include/analyzer/bar-chart.h   |     60 [31m-[m
+ .../plugin/include/analyzer/call-details.h         |    127 [31m-[m
+ .../14-posix/plugin/include/analyzer/call-info.h   |    102 [31m-[m
+ .../14-posix/plugin/include/analyzer/call-string.h |    171 [31m-[m
+ .../plugin/include/analyzer/call-summary.h         |    119 [31m-[m
+ .../plugin/include/analyzer/checker-event.h        |    709 [31m-[m
+ .../plugin/include/analyzer/checker-path.h         |    152 [31m-[m
+ .../14-posix/plugin/include/analyzer/complexity.h  |     52 [31m-[m
+ .../plugin/include/analyzer/constraint-manager.h   |    515 [31m-[m
+ .../plugin/include/analyzer/diagnostic-manager.h   |    242 [31m-[m
+ .../14-posix/plugin/include/analyzer/engine.h      |     30 [31m-[m
+ .../plugin/include/analyzer/exploded-graph.h       |   1044 [31m-[m
+ .../plugin/include/analyzer/feasible-graph.h       |    224 [31m-[m
+ .../plugin/include/analyzer/function-set.h         |     50 [31m-[m
+ .../plugin/include/analyzer/inlining-iterator.h    |    149 [31m-[m
+ .../include/analyzer/known-function-manager.h      |     78 [31m-[m
+ .../plugin/include/analyzer/pending-diagnostic.h   |    482 [31m-[m
+ .../plugin/include/analyzer/program-point.h        |    318 [31m-[m
+ .../plugin/include/analyzer/program-state.h        |    331 [31m-[m
+ .../14-posix/plugin/include/analyzer/ranges.h      |    100 [31m-[m
+ .../plugin/include/analyzer/reachability.h         |     76 [31m-[m
+ .../plugin/include/analyzer/record-layout.h        |     91 [31m-[m
+ .../plugin/include/analyzer/region-model-manager.h |    330 [31m-[m
+ .../include/analyzer/region-model-reachability.h   |    126 [31m-[m
+ .../plugin/include/analyzer/region-model.h         |   1344 [31m-[m
+ .../14-posix/plugin/include/analyzer/region.h      |   1509 [31m-[m
+ .../14-posix/plugin/include/analyzer/sm.h          |    358 [31m-[m
+ .../14-posix/plugin/include/analyzer/state-purge.h |    256 [31m-[m
+ .../14-posix/plugin/include/analyzer/store.h       |    886 [31m-[m
+ .../14-posix/plugin/include/analyzer/supergraph.h  |    626 [31m-[m
+ .../14-posix/plugin/include/analyzer/svalue.h      |   1749 [31m-[m
+ .../14-posix/plugin/include/analyzer/symbol.h      |     53 [31m-[m
+ .../plugin/include/analyzer/trimmed-graph.h        |    122 [31m-[m
+ .../14-posix/plugin/include/ansidecl.h             |    354 [31m-[m
+ .../14-posix/plugin/include/array-traits.h         |     48 [31m-[m
+ .../14-posix/plugin/include/asan.h                 |    269 [31m-[m
+ .../14-posix/plugin/include/attr-fnspec.h          |    304 [31m-[m
+ .../14-posix/plugin/include/attribs.h              |    408 [31m-[m
+ .../14-posix/plugin/include/auto-host.h            |   2804 [31m-[m
+ .../14-posix/plugin/include/auto-profile.h         |     31 [31m-[m
+ .../14-posix/plugin/include/b-header-vars          |     97 [31m-[m
+ .../14-posix/plugin/include/backend.h              |     35 [31m-[m
+ .../14-posix/plugin/include/basic-block.h          |    642 [31m-[m
+ .../14-posix/plugin/include/bb-reorder.h           |     40 [31m-[m
+ .../14-posix/plugin/include/bitmap.h               |   1092 [31m-[m
+ .../14-posix/plugin/include/builtin-attrs.def      |    427 [31m-[m
+ .../14-posix/plugin/include/builtin-types.def      |   1071 [31m-[m
+ .../14-posix/plugin/include/builtins.def           |   1212 [31m-[m
+ .../14-posix/plugin/include/builtins.h             |    168 [31m-[m
+ .../14-posix/plugin/include/bversion.h             |      4 [31m-[m
+ .../14-posix/plugin/include/c-family/c-common.def  |     96 [31m-[m
+ .../14-posix/plugin/include/c-family/c-common.h    |   1686 [31m-[m
+ .../14-posix/plugin/include/c-family/c-objc.h      |    183 [31m-[m
+ .../14-posix/plugin/include/c-family/c-pragma.h    |    290 [31m-[m
+ .../plugin/include/c-family/c-pretty-print.h       |    142 [31m-[m
+ .../14-posix/plugin/include/c-tree.h               |    930 [31m-[m
+ .../14-posix/plugin/include/c/c-tree.def           |     31 [31m-[m
+ .../14-posix/plugin/include/calls.h                |    138 [31m-[m
+ .../14-posix/plugin/include/ccmp.h                 |     25 [31m-[m
+ .../14-posix/plugin/include/cfg-flags.def          |    191 [31m-[m
+ .../14-posix/plugin/include/cfg.h                  |    192 [31m-[m
+ .../14-posix/plugin/include/cfganal.h              |     91 [31m-[m
+ .../14-posix/plugin/include/cfgbuild.h             |     29 [31m-[m
+ .../14-posix/plugin/include/cfgcleanup.h           |     35 [31m-[m
+ .../14-posix/plugin/include/cfgexpand.h            |     28 [31m-[m
+ .../14-posix/plugin/include/cfghooks.h             |    289 [31m-[m
+ .../14-posix/plugin/include/cfgloop.h              |    946 [31m-[m
+ .../14-posix/plugin/include/cfgloopmanip.h         |     77 [31m-[m
+ .../14-posix/plugin/include/cfgrtl.h               |     62 [31m-[m
+ .../14-posix/plugin/include/cgraph.h               |   3593 [31m-[m
+ .../14-posix/plugin/include/cif-code.def           |    144 [31m-[m
+ .../14-posix/plugin/include/collect-utils.h        |     51 [31m-[m
+ .../14-posix/plugin/include/collect2-aix.h         |    306 [31m-[m
+ .../14-posix/plugin/include/collect2.h             |     39 [31m-[m
+ .../14-posix/plugin/include/color-macros.h         |    124 [31m-[m
+ .../include/common/config/i386/i386-cpuinfo.h      |    291 [31m-[m
+ .../14-posix/plugin/include/conditions.h           |     69 [31m-[m
+ .../14-posix/plugin/include/config.h               |     10 [31m-[m
+ .../14-posix/plugin/include/config/i386/biarch64.h |     29 [31m-[m
+ .../14-posix/plugin/include/config/i386/bsd.h      |     93 [31m-[m
+ .../14-posix/plugin/include/config/i386/cygming.h  |    469 [31m-[m
+ .../14-posix/plugin/include/config/i386/gas.h      |    102 [31m-[m
+ .../plugin/include/config/i386/i386-isa.def        |    128 [31m-[m
+ .../plugin/include/config/i386/i386-opts.h         |    146 [31m-[m
+ .../plugin/include/config/i386/i386-protos.h       |    428 [31m-[m
+ .../14-posix/plugin/include/config/i386/i386.h     |   3013 [31m-[m
+ .../plugin/include/config/i386/mingw-pthread.h     |     21 [31m-[m
+ .../plugin/include/config/i386/mingw-stdint.h      |     50 [31m-[m
+ .../plugin/include/config/i386/mingw-w64.h         |    137 [31m-[m
+ .../14-posix/plugin/include/config/i386/mingw32.h  |    318 [31m-[m
+ .../plugin/include/config/i386/stringop.def        | 

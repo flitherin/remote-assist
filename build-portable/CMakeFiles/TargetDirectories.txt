@@ -1,3 +1,0 @@
-/home/xerxes/Рабочий стол/remote-assist/build-portable/CMakeFiles/assist_session.dir
-/home/xerxes/Рабочий стол/remote-assist/build-portable/CMakeFiles/edit_cache.dir
-/home/xerxes/Рабочий стол/remote-assist/build-portable/CMakeFiles/rebuild_cache.dir

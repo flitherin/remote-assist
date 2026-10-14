@@ -1,160 +1,154 @@
 #include <windows.h>
 #include <commctrl.h>
-#include "assist_session.h"
+#include <wchar.h>
+#include <stdio.h>
 #include "chat.h"
-static HWND heading, description, status_label, confirm_button, stop_button;
-static HWND address_label, address_edit, port_label, port_edit, notice;
-static HWND history, message_edit, send_button, share_button, action_button;
-static int actions_allowed;
-static HFONT body_font, title_font;
-static UINT dpi = 96;
-static int px(int n) { return MulDiv(n, (int)dpi, 96); }
+static HWND heading, role, address, port, status, start, stop, history, message_edit, send_button, share, view,control_button;
+static HFONT font;
+static UINT dpi=96;
+static int px(int value) { return MulDiv(value,(int)dpi,96); }
+static int hosting(void) { return SendMessageW(role,CB_GETCURSEL,0,0)==1; }
+static HWND control(HWND parent,const wchar_t *type,const wchar_t *text,DWORD style,int id) {
+    HWND child=CreateWindowW(type,text,WS_CHILD|WS_VISIBLE|style,0,0,0,0,parent,(HMENU)(INT_PTR)id,GetModuleHandleW(NULL),NULL);
+    SendMessageW(child,WM_SETFONT,(WPARAM)font,TRUE); return child;
+}
 static void layout(HWND window) {
-    RECT r; GetClientRect(window,&r);
-    MoveWindow(heading,px(28),px(24),r.right-px(56),px(38),TRUE);
-    MoveWindow(description,px(28),px(72),r.right-px(56),px(58),TRUE);
-    MoveWindow(address_label,px(28),px(142),px(320),px(24),TRUE);
-    MoveWindow(address_edit,px(28),px(170),px(350),px(32),TRUE);
-    MoveWindow(port_label,px(398),px(142),px(100),px(24),TRUE);
-    MoveWindow(port_edit,px(398),px(170),px(110),px(32),TRUE);
-    MoveWindow(notice,px(28),px(218),r.right-px(56),px(46),TRUE);
-    MoveWindow(status_label,px(28),px(290),r.right-px(56),px(46),TRUE);
-    MoveWindow(confirm_button,px(28),px(362),px(270),px(40),TRUE);
-    MoveWindow(stop_button,px(314),px(362),px(194),px(40),TRUE);
-    if(share_button) MoveWindow(share_button,px(28),px(670),px(270),px(38),TRUE);
-    if(action_button) MoveWindow(action_button,px(28),px(720),px(480),px(38),TRUE);
-    MoveWindow(history,px(28),px(422),r.right-px(56),px(180),TRUE);
-    MoveWindow(message_edit,px(28),px(618),px(350),px(36),TRUE);
-    MoveWindow(send_button,px(394),px(618),px(114),px(36),TRUE);
+    RECT r; GetClientRect(window,&r); int sidebar=px(350),margin=px(16),gap=px(12);
+    MoveWindow(heading,margin,margin,sidebar,px(30),TRUE);
+    MoveWindow(role,margin,px(56),sidebar,px(160),TRUE);
+    MoveWindow(address,margin,px(100),px(230),px(32),TRUE);
+    MoveWindow(port,margin+px(242),px(100),px(108),px(32),TRUE);
+    MoveWindow(start,margin,px(144),px(168),px(36),TRUE);
+    MoveWindow(stop,margin+px(180),px(144),px(170),px(36),TRUE);
+    MoveWindow(status,margin,px(194),sidebar,px(100),TRUE);
+    MoveWindow(share,margin,px(302),sidebar,px(38),TRUE);
+    MoveWindow(control_button,margin,px(348),sidebar,px(38),TRUE);
+    int chatHeight=r.bottom-px(466); if(chatHeight<px(70)) chatHeight=px(70);
+    MoveWindow(history,margin,px(402),sidebar,chatHeight,TRUE);
+    MoveWindow(message_edit,margin,r.bottom-px(48),px(242),px(32),TRUE);
+    MoveWindow(send_button,margin+px(254),r.bottom-px(48),px(96),px(32),TRUE);
+    MoveWindow(view,sidebar+margin+gap,margin,r.right-sidebar-margin*2-gap,r.bottom-margin*2,TRUE);
+}
+static void update_controls(void) {
+    int started=chat_started(),active=chat_ready();
+    EnableWindow(role,!started); EnableWindow(address,!started); EnableWindow(port,!started);
+    EnableWindow(start,!started); EnableWindow(stop,started);
+    EnableWindow(message_edit,active); EnableWindow(send_button,active);
+    EnableWindow(share,active && hosting());
+    ShowWindow(share,hosting()?SW_SHOW:SW_HIDE);
+    EnableWindow(control_button,active && hosting());
+    ShowWindow(control_button,hosting()?SW_SHOW:SW_HIDE);
+}
+void control_changed(int allowed) {
+    if(!control_button) return;
+    SetWindowTextW(control_button,allowed?L"Запретить управление · Ctrl+Alt+F12":L"Разрешить управление");
+    if(allowed) {
+        SetWindowTextW(status,chat_is_host()?L"ОПЕРАТОР УПРАВЛЯЕТ КОМПЬЮТЕРОМ\nОтзыв доступа: Ctrl+Alt+F12":L"Управление разрешено владельцем.\nНажмите на экран для мыши и клавиатуры.");
+    } else if(chat_ready()) SetWindowTextW(status,L"Чат активен · управление отключено");
 }
 void chat_status(const wchar_t *text,int active) {
-    SetWindowTextW(status_label,text);
-    EnableWindow(message_edit,active); EnableWindow(send_button,active);
-    if(share_button) { EnableWindow(share_button,active); if(!active) SetWindowTextW(share_button,L"Разрешить показ экрана"); }
-    if(action_button) { EnableWindow(action_button,active); if(!active) { actions_allowed=0; SetWindowTextW(action_button,L"Разрешить действия · функция недоступна"); } }
-    EnableWindow(confirm_button,FALSE); EnableWindow(stop_button,TRUE);
+    SetWindowTextW(status,text);
+    if(!active) SetWindowTextW(share,L"Разрешить показ экрана");
+    update_controls();
 }
 void chat_line(const wchar_t *text) {
-    if(GetWindowTextLengthW(history)>60000) SetWindowTextW(history,L"");
+    int length=GetWindowTextLengthW(history);
+    if(length>56000) {
+        SendMessageW(history,EM_SETSEL,0,12000);
+        SendMessageW(history,EM_REPLACESEL,FALSE,(LPARAM)L"");
+    }
     SendMessageW(history,EM_SETSEL,(WPARAM)-1,(LPARAM)-1);
     SendMessageW(history,EM_REPLACESEL,FALSE,(LPARAM)text);
     SendMessageW(history,EM_REPLACESEL,FALSE,(LPARAM)L"\r\n");
     SendMessageW(history,EM_SCROLLCARET,0,0);
 }
-static void fonts(void) {
-    HWND children[]={description,status_label,confirm_button,stop_button,address_label,address_edit,port_label,port_edit,notice,history,message_edit,send_button,share_button,action_button};
-    HFONT old_body=body_font, old_title=title_font;
-    body_font=CreateFontW(-px(15),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,CLEARTYPE_QUALITY,DEFAULT_PITCH,L"Segoe UI");
-    title_font=CreateFontW(-px(25),0,0,0,FW_SEMIBOLD,0,0,0,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,CLEARTYPE_QUALITY,DEFAULT_PITCH,L"Segoe UI");
-    for(unsigned i=0;i<sizeof(children)/sizeof(children[0]);++i) SendMessageW(children[i],WM_SETFONT,(WPARAM)body_font,TRUE);
-    SendMessageW(heading,WM_SETFONT,(WPARAM)title_font,TRUE);
-    if(old_body) DeleteObject(old_body);
-    if(old_title) DeleteObject(old_title);
+static void send_message(void) {
+    wchar_t text[1501],display[1540]; GetWindowTextW(message_edit,text,1501);
+    if(chat_send(text)) {
+        swprintf_s(display,1540,L"Вы: %ls",text); chat_line(display);
+        SetWindowTextW(message_edit,L""); SetFocus(message_edit);
+    } else if(*text && chat_ready()) chat_line(L"Не удалось отправить сообщение. Повторите отправку.");
 }
-static HWND control(HWND parent,const wchar_t *type,const wchar_t *text,DWORD style,int id) {
-    return CreateWindowW(type,text,WS_CHILD|WS_VISIBLE|style,0,0,0,0,parent,(HMENU)(INT_PTR)id,GetModuleHandleW(NULL),NULL);
+static LRESULT CALLBACK edit_proc(HWND window,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR data) {
+    (void)id; (void)data;
+    if(msg==WM_KEYDOWN && wp==VK_RETURN) { send_message(); return 0; }
+    if(msg==WM_CHAR && wp==VK_RETURN) return 0;
+    if(msg==WM_GETDLGCODE && lp && ((MSG *)lp)->message==WM_KEYDOWN && ((MSG *)lp)->wParam==VK_RETURN) return DLGC_WANTMESSAGE;
+    return DefSubclassProc(window,msg,wp,lp);
 }
-static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM wp,LPARAM lp) {
-    switch(message) {
+static LRESULT CALLBACK window_proc(HWND window,UINT msg,WPARAM wp,LPARAM lp) {
+    switch(msg) {
     case WM_CREATE:
         dpi=GetDpiForWindow(window);
-#ifdef ASSIST_HOST
-        heading=control(window,L"STATIC",L"Принимающая сторона",0,0);
-#else
-        heading=control(window,L"STATIC",L"Рабочее место оператора",0,0);
-#endif
-        description=control(window,L"STATIC",L"Текстовый чат с подтверждением подключения.\nПоказ экрана включается отдельно. Только просмотр.",0,0);
-#ifdef ASSIST_HOST
-        address_label=control(window,L"STATIC",L"Локальный IPv4 для прослушивания",0,0);
-        address_edit=control(window,L"EDIT",L"127.0.0.1",WS_BORDER|ES_AUTOHSCROLL|WS_TABSTOP,3);
-#else
-        address_label=control(window,L"STATIC",L"IPv4 собеседника",0,0);
-        address_edit=control(window,L"EDIT",L"127.0.0.1",WS_BORDER|ES_AUTOHSCROLL|WS_TABSTOP,3);
-#endif
-        port_label=control(window,L"STATIC",L"Порт",0,0);
-        port_edit=control(window,L"EDIT",L"45873",WS_BORDER|ES_READONLY,4);
-        notice=control(window,L"STATIC",L"Чат без шифрования: используйте доверенную сеть / VPN.\nПо умолчанию доступен только на этом компьютере.",0,0);
-        status_label=control(window,L"STATIC",L"Состояние: отключено",0,0);
-        confirm_button=control(window,L"BUTTON",L"Начать / запросить чат",WS_TABSTOP|BS_DEFPUSHBUTTON,1);
-        stop_button=control(window,L"BUTTON",L"Завершить сеанс",WS_TABSTOP,2);
+        font=CreateFontW(-px(15),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,CLEARTYPE_QUALITY,0,L"Segoe UI");
+        heading=control(window,L"STATIC",L"Remote Assist · чат и экран",0,0);
+        role=control(window,L"COMBOBOX",L"",CBS_DROPDOWNLIST|WS_TABSTOP,10);
+        SendMessageW(role,CB_ADDSTRING,0,(LPARAM)L"Оператор · подключиться");
+        SendMessageW(role,CB_ADDSTRING,0,(LPARAM)L"Владелец · принять подключение");
+        SendMessageW(role,CB_SETCURSEL,0,0);
+        address=control(window,L"EDIT",L"127.0.0.1",WS_BORDER|ES_AUTOHSCROLL|WS_TABSTOP,3);
+        port=control(window,L"EDIT",L"45873",WS_BORDER|ES_NUMBER|WS_TABSTOP,4);
+        SendMessageW(address,EM_SETLIMITTEXT,15,0); SendMessageW(port,EM_SETLIMITTEXT,5,0);
+        start=control(window,L"BUTTON",L"Начать сеанс",WS_TABSTOP,1);
+        stop=control(window,L"BUTTON",L"Завершить",WS_TABSTOP,2);
+        status=control(window,L"STATIC",L"Отключено. Укажите IPv4 и порт.\nТранспорт без шифрования.\nУправление требует отдельного разрешения.\nЖурнал: RemoteAssist-session.log",0,0);
+        share=control(window,L"BUTTON",L"Разрешить показ экрана",WS_TABSTOP,8);
+        control_button=control(window,L"BUTTON",L"Разрешить управление",WS_TABSTOP,9);
+        control_init(window);
         history=control(window,L"EDIT",L"",WS_BORDER|WS_VSCROLL|ES_MULTILINE|ES_READONLY,5);
+        SendMessageW(history,EM_SETLIMITTEXT,65535,0);
         message_edit=control(window,L"EDIT",L"",WS_BORDER|ES_AUTOHSCROLL|WS_TABSTOP,6);
-        send_button=control(window,L"BUTTON",L"Отправить",WS_TABSTOP,7);
         SendMessageW(message_edit,EM_SETLIMITTEXT,1500,0);
-        SendMessageW(address_edit,EM_SETLIMITTEXT,15,0);
-#ifdef ASSIST_HOST
-        share_button=control(window,L"BUTTON",L"Разрешить показ экрана",WS_TABSTOP,8);
-        SendMessageW(share_button,WM_SETFONT,(WPARAM)body_font,TRUE);
-        action_button=control(window,L"BUTTON",L"Разрешить действия · функция недоступна",WS_TABSTOP,9);
-        EnableWindow(action_button,FALSE);
-        EnableWindow(share_button,FALSE); SetTimer(window,43,1000,NULL);
-#endif
-        EnableWindow(message_edit,FALSE); EnableWindow(send_button,FALSE);
-        EnableWindow(stop_button,FALSE); fonts(); layout(window); return 0;
+        SetWindowSubclass(message_edit,edit_proc,1,0);
+        send_button=control(window,L"BUTTON",L"Отправить",WS_TABSTOP,7);
+        view=screen_create(window);
+        SetTimer(window,43,250,NULL); update_controls(); layout(window); return 0;
     case WM_SIZE: layout(window); return 0;
+    case WM_HOTKEY: if(wp==44 && chat_is_host() && control_allowed()) control_toggle(); return 0;
+    case WM_ACTIVATE: if(LOWORD(wp)==WA_INACTIVE) control_release(); return 0;
+    case WM_GETMINMAXINFO:
+        ((MINMAXINFO *)lp)->ptMinTrackSize.x=px(850);
+        ((MINMAXINFO *)lp)->ptMinTrackSize.y=px(620); return 0;
     case WM_DPICHANGED: {
-        RECT *r=(RECT *)lp; dpi=HIWORD(wp); fonts();
+        RECT *r=(RECT *)lp; dpi=HIWORD(wp);
+        HFONT old=font; font=CreateFontW(-px(15),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,CLEARTYPE_QUALITY,0,L"Segoe UI");
+        HWND children[]={heading,role,address,port,status,start,stop,share,control_button,history,message_edit,send_button};
+        for(unsigned i=0;i<sizeof(children)/sizeof(children[0]);i++) SendMessageW(children[i],WM_SETFONT,(WPARAM)font,TRUE);
+        DeleteObject(old);
         SetWindowPos(window,NULL,r->left,r->top,r->right-r->left,r->bottom-r->top,SWP_NOZORDER|SWP_NOACTIVATE);
         layout(window); return 0;
     }
-    case WM_CTLCOLOREDIT:
-    case WM_CTLCOLORSTATIC:
-        SetTextColor((HDC)wp,RGB(32,38,48)); SetBkColor((HDC)wp,RGB(255,255,255));
-        return (LRESULT)GetStockObject(WHITE_BRUSH);
     case CHAT_EVENT: chat_event(wp,lp); return 0;
-    case WM_TIMER:
-        if(wp==43) screen_tick();
-        if(wp==42) { KillTimer(window,42); chat_stop(); chat_status(L"Время ожидания истекло",0); EnableWindow(confirm_button,TRUE); EnableWindow(stop_button,FALSE); }
-        return 0;
+    case WM_TIMER: if(wp==43) screen_tick(); if(wp==42) { KillTimer(window,42); chat_timeout(); } return 0;
     case WM_COMMAND:
+        if(LOWORD(wp)==10 && HIWORD(wp)==CBN_SELCHANGE) { update_controls(); return 0; }
         if(LOWORD(wp)==1) {
-            wchar_t address[64]; GetWindowTextW(address_edit,address,64);
-#ifdef ASSIST_HOST
-            int server=1;
-#else
-            int server=0;
-#endif
-            if(!chat_start(window,server,address)) { SetWindowTextW(status_label,L"Не удалось подключиться. Проверьте IPv4 и порт."); EnableWindow(confirm_button,TRUE); EnableWindow(stop_button,FALSE); }
-        } else if(LOWORD(wp)==2) {
-            chat_stop(); KillTimer(window,42); chat_status(L"Сеанс завершён",0);
-            EnableWindow(confirm_button,TRUE); EnableWindow(stop_button,FALSE);
-        } else if(LOWORD(wp)==9 && chat_ready()) {
-            if(actions_allowed) actions_allowed=0;
-            else if(MessageBoxW(window,L"Сохранить локальный выбор: разрешить действия?\nУдалённый ввод не реализован: клиент не получит управление.",L"Разрешение действий · интерфейс",MB_YESNO|MB_DEFBUTTON2|MB_ICONQUESTION)==IDYES) actions_allowed=1;
-            SetWindowTextW(action_button,actions_allowed?L"Запретить действия · локальный выбор":L"Разрешить действия · функция недоступна");
-        } else if(LOWORD(wp)==8) {
-            if(chat_ready()) SetWindowTextW(share_button,screen_toggle(window)?L"Остановить показ":L"Разрешить показ экрана");
-        } else if(LOWORD(wp)==7) {
-            wchar_t text[1501],display[1540]; GetWindowTextW(message_edit,text,1501);
-            if(chat_send(text)) { wsprintfW(display,L"Вы: %s",text); chat_line(display); SetWindowTextW(message_edit,L""); }
-        }
+            wchar_t ip[16],portText[8],*end=NULL;
+            GetWindowTextW(address,ip,16); GetWindowTextW(port,portText,8);
+            long number=wcstol(portText,&end,10);
+            if(!*portText || *end || number<1 || number>65535) { SetWindowTextW(status,L"Порт должен быть от 1 до 65535."); return 0; }
+            if(!chat_start(window,hosting(),ip,(unsigned short)number)) chat_status(L"Ошибка подключения: проверьте IPv4, порт и занятость адреса.",0);
+        } else if(LOWORD(wp)==2) { chat_stop(); chat_status(L"Сеанс завершён",0); }
+        else if(LOWORD(wp)==7) send_message();
+        else if(LOWORD(wp)==8 && chat_ready()) SetWindowTextW(share,screen_toggle(window)?L"Остановить показ":L"Разрешить показ экрана");
+        else if(LOWORD(wp)==9) control_toggle();
         return 0;
     case WM_DESTROY:
-        chat_stop(); KillTimer(window,42); assist_stop_local(); DeleteObject(body_font); DeleteObject(title_font); PostQuitMessage(0); return 0;
+        chat_stop(); KillTimer(window,42); KillTimer(window,43); DeleteObject(font); PostQuitMessage(0); return 0;
     }
-    return DefWindowProcW(window,message,wp,lp);
+    return DefWindowProcW(window,msg,wp,lp);
 }
 int WINAPI wWinMain(HINSTANCE instance,HINSTANCE previous,PWSTR command,int show) {
-    WNDCLASSW cls={0}; MSG message; BOOL result;
-    INITCOMMONCONTROLSEX controls={sizeof(controls),ICC_STANDARD_CLASSES};
-    (void)previous; (void)command; InitCommonControlsEx(&controls);
-    cls.lpfnWndProc=window_proc; cls.hInstance=instance; cls.lpszClassName=L"RemoteAssistDemo";
-    cls.hCursor=LoadCursorW(NULL,IDC_ARROW); cls.hIcon=LoadIconW(NULL,IDI_APPLICATION);
-    cls.hbrBackground=(HBRUSH)GetStockObject(WHITE_BRUSH);
+    (void)previous; (void)command;
+    INITCOMMONCONTROLSEX controls={sizeof(controls),ICC_STANDARD_CLASSES}; InitCommonControlsEx(&controls);
+    WNDCLASSW cls={0}; cls.lpfnWndProc=window_proc; cls.hInstance=instance; cls.lpszClassName=L"RemoteAssistUnified";
+    cls.hCursor=LoadCursorW(NULL,IDC_ARROW); cls.hbrBackground=(HBRUSH)GetStockObject(WHITE_BRUSH);
     if(!RegisterClassW(&cls)) return 1;
-    dpi=GetDpiForSystem();
-    DWORD style=WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX;
-    RECT r={0,0,px(540),px(786)}; AdjustWindowRectExForDpi(&r,style,FALSE,0,dpi);
-#ifdef ASSIST_HOST
-    const wchar_t *title=L"Remote Assist · Сервер чата";
-#else
-    const wchar_t *title=L"Remote Assist · Клиент чата";
-#endif
-    HWND window=CreateWindowW(cls.lpszClassName,title,style,CW_USEDEFAULT,CW_USEDEFAULT,r.right-r.left,r.bottom-r.top,NULL,NULL,instance,NULL);
-    if(!window) return 2;
-    ShowWindow(window,show);
-    while((result=GetMessageW(&message,NULL,0,0))>0) {
-        if(!IsDialogMessageW(window,&message)) { TranslateMessage(&message); DispatchMessageW(&message); }
-    }
-    return result==-1?3:(int)message.wParam;
+    dpi=GetDpiForSystem(); RECT r={0,0,px(1180),px(720)};
+    AdjustWindowRectExForDpi(&r,WS_OVERLAPPEDWINDOW,FALSE,0,dpi);
+    HWND window=CreateWindowW(cls.lpszClassName,L"Remote Assist",WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,CW_USEDEFAULT,CW_USEDEFAULT,r.right-r.left,r.bottom-r.top,NULL,NULL,instance,NULL);
+    if(!window) return 2; ShowWindow(window,show);
+    MSG msg; BOOL result;
+    while((result=GetMessageW(&msg,NULL,0,0))>0) { if(!IsDialogMessageW(window,&msg)) { TranslateMessage(&msg); DispatchMessageW(&msg); } }
+    return result==-1?3:(int)msg.wParam;
 }
