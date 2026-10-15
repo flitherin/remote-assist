@@ -1,2 +1,0 @@
-8f53322643df68437cdfa4beac7bf28f90808a8aeadc5f96a012d4397627ed84  RemoteAssist.exe
-b255be7fc15757fe3d1a459c2497ca2387687cbebfbb1bb23ce93e276afbabd3  RemoteAssist-unified-win64.zip

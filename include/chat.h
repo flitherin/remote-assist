@@ -2,6 +2,9 @@
 #define CHAT_H
 #include <windows.h>
 #include "assist_session.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 #define CHAT_EVENT (WM_APP+1)
 int chat_start(HWND window, int server, const wchar_t *address, unsigned short port);
 void chat_event(WPARAM socket, LPARAM event);
@@ -37,4 +40,18 @@ void control_changed(int allowed);
 void control_dimensions(int *width,int *height);
 int screen_sharing(void);
 #define FRAME_RECORD_LIMIT (1280 * 720 * 8 + 131200)
+int chat_media_idle(void);
+void files_choose(HWND owner);
+void files_receive(const char *record);
+void files_tick(HWND owner);
+void files_stop(void);
+void audio_toggle(void);
+void audio_tick(void);
+void audio_receive(const char *record);
+void audio_stop(void);
+int audio_sharing(void);
+void audio_changed(void);
+#ifdef __cplusplus
+}
+#endif
 #endif

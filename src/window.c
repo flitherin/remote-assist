@@ -5,6 +5,7 @@
 #include "chat.h"
 static HWND heading, role, address, port, status, start, stop, history, message_edit, send_button, share, view,control_button;
 static HFONT font;
+static HWND file_button,audio_button;
 static UINT dpi=96;
 static int px(int value) { return MulDiv(value,(int)dpi,96); }
 static int hosting(void) { return SendMessageW(role,CB_GETCURSEL,0,0)==1; }
@@ -23,8 +24,10 @@ static void layout(HWND window) {
     MoveWindow(status,margin,px(194),sidebar,px(100),TRUE);
     MoveWindow(share,margin,px(302),sidebar,px(38),TRUE);
     MoveWindow(control_button,margin,px(348),sidebar,px(38),TRUE);
-    int chatHeight=r.bottom-px(466); if(chatHeight<px(70)) chatHeight=px(70);
-    MoveWindow(history,margin,px(402),sidebar,chatHeight,TRUE);
+    MoveWindow(file_button,margin,px(394),px(168),px(38),TRUE);
+    MoveWindow(audio_button,margin+px(180),px(394),px(170),px(38),TRUE);
+    int chatHeight=r.bottom-px(512); if(chatHeight<px(70)) chatHeight=px(70);
+    MoveWindow(history,margin,px(448),sidebar,chatHeight,TRUE);
     MoveWindow(message_edit,margin,r.bottom-px(48),px(242),px(32),TRUE);
     MoveWindow(send_button,margin+px(254),r.bottom-px(48),px(96),px(32),TRUE);
     MoveWindow(view,sidebar+margin+gap,margin,r.right-sidebar-margin*2-gap,r.bottom-margin*2,TRUE);
@@ -34,10 +37,15 @@ static void update_controls(void) {
     EnableWindow(role,!started); EnableWindow(address,!started); EnableWindow(port,!started);
     EnableWindow(start,!started); EnableWindow(stop,started);
     EnableWindow(message_edit,active); EnableWindow(send_button,active);
+    EnableWindow(file_button,active); EnableWindow(audio_button,active && hosting());
+    ShowWindow(audio_button,hosting()?SW_SHOW:SW_HIDE);
     EnableWindow(share,active && hosting());
     ShowWindow(share,hosting()?SW_SHOW:SW_HIDE);
     EnableWindow(control_button,active && hosting());
     ShowWindow(control_button,hosting()?SW_SHOW:SW_HIDE);
+}
+void audio_changed(void) {
+    if(audio_button) SetWindowTextW(audio_button,audio_sharing()?L"Остановить звук":L"Передавать звук");
 }
 void control_changed(int allowed) {
     if(!control_button) return;
@@ -94,6 +102,8 @@ static LRESULT CALLBACK window_proc(HWND window,UINT msg,WPARAM wp,LPARAM lp) {
         status=control(window,L"STATIC",L"Отключено. Укажите IPv4 и порт.\nТранспорт без шифрования.\nУправление требует отдельного разрешения.\nЖурнал: RemoteAssist-session.log",0,0);
         share=control(window,L"BUTTON",L"Разрешить показ экрана",WS_TABSTOP,8);
         control_button=control(window,L"BUTTON",L"Разрешить управление",WS_TABSTOP,9);
+        file_button=control(window,L"BUTTON",L"Отправить файл…",WS_TABSTOP,11);
+        audio_button=control(window,L"BUTTON",L"Передавать звук",WS_TABSTOP,12);
         control_init(window);
         history=control(window,L"EDIT",L"",WS_BORDER|WS_VSCROLL|ES_MULTILINE|ES_READONLY,5);
         SendMessageW(history,EM_SETLIMITTEXT,65535,0);
@@ -102,7 +112,7 @@ static LRESULT CALLBACK window_proc(HWND window,UINT msg,WPARAM wp,LPARAM lp) {
         SetWindowSubclass(message_edit,edit_proc,1,0);
         send_button=control(window,L"BUTTON",L"Отправить",WS_TABSTOP,7);
         view=screen_create(window);
-        SetTimer(window,43,250,NULL); update_controls(); layout(window); return 0;
+        SetTimer(window,43,66,NULL); SetTimer(window,45,20,NULL); update_controls(); layout(window); return 0;
     case WM_SIZE: layout(window); return 0;
     case WM_HOTKEY: if(wp==44 && chat_is_host() && control_allowed()) control_toggle(); return 0;
     case WM_ACTIVATE: if(LOWORD(wp)==WA_INACTIVE) control_release(); return 0;
@@ -112,14 +122,14 @@ static LRESULT CALLBACK window_proc(HWND window,UINT msg,WPARAM wp,LPARAM lp) {
     case WM_DPICHANGED: {
         RECT *r=(RECT *)lp; dpi=HIWORD(wp);
         HFONT old=font; font=CreateFontW(-px(15),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,CLEARTYPE_QUALITY,0,L"Segoe UI");
-        HWND children[]={heading,role,address,port,status,start,stop,share,control_button,history,message_edit,send_button};
+        HWND children[]={heading,role,address,port,status,start,stop,share,control_button,file_button,audio_button,history,message_edit,send_button};
         for(unsigned i=0;i<sizeof(children)/sizeof(children[0]);i++) SendMessageW(children[i],WM_SETFONT,(WPARAM)font,TRUE);
         DeleteObject(old);
         SetWindowPos(window,NULL,r->left,r->top,r->right-r->left,r->bottom-r->top,SWP_NOZORDER|SWP_NOACTIVATE);
         layout(window); return 0;
     }
     case CHAT_EVENT: chat_event(wp,lp); return 0;
-    case WM_TIMER: if(wp==43) screen_tick(); if(wp==42) { KillTimer(window,42); chat_timeout(); } return 0;
+    case WM_TIMER: if(wp==43) screen_tick(); if(wp==45) { audio_tick(); files_tick(window); } if(wp==42) { KillTimer(window,42); chat_timeout(); } return 0;
     case WM_COMMAND:
         if(LOWORD(wp)==10 && HIWORD(wp)==CBN_SELCHANGE) { update_controls(); return 0; }
         if(LOWORD(wp)==1) {
@@ -132,9 +142,11 @@ static LRESULT CALLBACK window_proc(HWND window,UINT msg,WPARAM wp,LPARAM lp) {
         else if(LOWORD(wp)==7) send_message();
         else if(LOWORD(wp)==8 && chat_ready()) SetWindowTextW(share,screen_toggle(window)?L"Остановить показ":L"Разрешить показ экрана");
         else if(LOWORD(wp)==9) control_toggle();
+        else if(LOWORD(wp)==11) files_choose(window);
+        else if(LOWORD(wp)==12) audio_toggle();
         return 0;
     case WM_DESTROY:
-        chat_stop(); KillTimer(window,42); KillTimer(window,43); DeleteObject(font); PostQuitMessage(0); return 0;
+        chat_stop(); KillTimer(window,42); KillTimer(window,43); KillTimer(window,45); DeleteObject(font); PostQuitMessage(0); return 0;
     }
     return DefWindowProcW(window,msg,wp,lp);
 }

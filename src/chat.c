@@ -11,7 +11,7 @@ static SOCKET listener=INVALID_SOCKET, peer=INVALID_SOCKET;
 static HWND owner;
 static int host, active, deciding, initialized;
 static char input[FRAME_RECORD_LIMIT], output[FRAME_RECORD_LIMIT];
-static size_t used, queued;
+static size_t used, queued, output_offset;
 static unsigned long session_id;
 static void audit(const wchar_t *event) {
     FILE *file=_wfopen(L"RemoteAssist-session.log",L"a, ccs=UTF-8");
@@ -41,26 +41,30 @@ int chat_peer_local(void) {
 static void disconnect(void) {
     if(active || peer!=INVALID_SOCKET) audit(L"Сеанс отключён");
     ++session_id;
+    files_stop();
+    audio_stop();
     control_stop();
     KillTimer(owner,42);
     if(peer!=INVALID_SOCKET) { WSAAsyncSelect(peer,owner,0,0); closesocket(peer); }
-    peer=INVALID_SOCKET; active=0; used=queued=0; screen_stop();
+    peer=INVALID_SOCKET; active=0; used=queued=output_offset=0; screen_stop();
     assist_stop_local();
 }
 static void flush(void) {
     while(peer!=INVALID_SOCKET && queued) {
-        int n=send(peer,output,(int)queued,0);
+        int n=send(peer,output+output_offset,(int)queued,0);
         if(n==SOCKET_ERROR) {
             if(WSAGetLastError()==WSAEWOULDBLOCK) return;
             disconnect(); chat_status(L"Соединение потеряно",0); return;
         }
         if(!n) { disconnect(); chat_status(L"Соединение закрыто",0); return; }
-        memmove(output,output+n,queued-(size_t)n); queued-=(size_t)n;
+        output_offset+=(size_t)n; queued-=(size_t)n;
     }
+    if(!queued) output_offset=0;
 }
 static int queue(const char *s) {
     size_t n=strlen(s);
     if(peer==INVALID_SOCKET || n>sizeof(output)-queued) return 0;
+    if(output_offset) { memmove(output,output+output_offset,queued); output_offset=0; }
     memcpy(output+queued,s,n); queued+=n; flush(); return peer!=INVALID_SOCKET;
 }
 void chat_stop(void) {
@@ -98,7 +102,7 @@ int chat_start(HWND window,int server,const wchar_t *address,unsigned short port
 }
 static void line(char *s) {
     if(!active) {
-        if(host && !strcmp(s,"CHAT/3")) {
+        if(host && !strcmp(s,"CHAT/4")) {
             struct sockaddr_in remote={0}; int len=sizeof(remote); wchar_t ip[64]=L"?",question[400];
             getpeername(peer,(struct sockaddr *)&remote,&len);
             InetNtopW(AF_INET,&remote.sin_addr,ip,64);
@@ -116,6 +120,8 @@ static void line(char *s) {
         assist_confirm_local();
         KillTimer(owner,42); chat_status(L"Чат активен · управление по отдельному разрешению",1);
         audit(L"Подключение подтверждено"); chat_line(L"Сеанс текстового чата начат.");
+    } else if(!strncmp(s,"FILE ",5)) { files_receive(s+5);
+    } else if(!strncmp(s,"AUDIO ",6)) { audio_receive(s+6);
     } else if(!host && !strncmp(s,"FRAME2 ",7)) { screen_receive(s+7);
     } else if(!host && !strcmp(s,"SCREEN_STOP")) { control_release(); screen_clear();
     } else if(!strncmp(s,"CTRL ",5)) { control_receive(s+5);
@@ -135,13 +141,13 @@ void chat_event(WPARAM socket,LPARAM event) {
         SOCKET incoming=accept(listener,NULL,NULL);
         if(incoming==INVALID_SOCKET) return;
         if(peer!=INVALID_SOCKET || deciding) { closesocket(incoming); return; }
-        peer=incoming; used=queued=0; active=0;
+        peer=incoming; used=queued=output_offset=0; active=0;
         if(WSAAsyncSelect(peer,owner,CHAT_EVENT,FD_READ|FD_WRITE|FD_CLOSE)) {
             disconnect(); chat_status(L"Не удалось принять соединение",0); return;
         }
         SetTimer(owner,42,30000,NULL); break;
     }
-    case FD_CONNECT: if(queue("CHAT/3\n")) chat_status(L"Ожидание согласия собеседника…",0); break;
+    case FD_CONNECT: if(queue("CHAT/4\n")) chat_status(L"Ожидание согласия собеседника…",0); break;
     case FD_WRITE: flush(); break;
     case FD_CLOSE: disconnect(); chat_status(L"Собеседник завершил сеанс",0); KillTimer(owner,42); break;
     case FD_READ:
@@ -178,6 +184,7 @@ unsigned long chat_session_id(void) { return session_id; }
 int chat_started(void) { return peer!=INVALID_SOCKET || listener!=INVALID_SOCKET; }
 int chat_is_host(void) { return host; }
 int chat_frame_idle(void) { return active && host && !queued; }
+int chat_media_idle(void) { return active && !queued; }
 int chat_control_send(const char *record) { return active && record ? queue(record) : 0; }
 void chat_timeout(void) {
     if(active || deciding || peer==INVALID_SOCKET) return;
